@@ -1,4 +1,5 @@
-from flask import render_template
+from flask import render_template, redirect, url_for
+from twittor.forms import LoginForm
 
 def index():
     name = {"username": "John",}
@@ -23,4 +24,11 @@ def index():
     return render_template("index.html", name=name,rows=rows, posts=posts)
 
 def login():
-    return render_template("login.html")
+    form = LoginForm()
+    
+    if form.validate_on_submit():
+        msg = f"username = {form.username.data}, password = {form.password.data}, rememberMe = {form.rememberMe.data}"
+        print(msg)
+        return redirect(url_for("index"))
+    
+    return render_template("login.html", title="Login In", form=form)
