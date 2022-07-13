@@ -21,3 +21,6 @@ def index():
         }
     ]
     return render_template("index.html", name=name,rows=rows, posts=posts)
+
+def login():
+    return render_template("login.html")
