@@ -8,6 +8,8 @@ flask = "*"
 requests = "*"
 flask-script = "*"
 flask-wtf = "*"
+flask-sqlalchemy = "*"
+flask-migrate = "*"
 
 [dev-packages]
 autopep8 = "*"
