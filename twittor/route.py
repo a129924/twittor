@@ -1,9 +1,11 @@
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, request
+from flask_login import login_user, current_user, logout_user, login_required
+
 from twittor.forms import LoginForm
 from twittor.models import User, Tweet
 
+@login_required
 def index():
-    name = {"username": "John",}
     rows = [
         {"name": "Python","age":27},
         {"name": "Python","age":27},
@@ -22,14 +24,30 @@ def index():
             "body": "hi I'm test!"
         }
     ]
-    return render_template("index.html", name=name,rows=rows, posts=posts)
+    return render_template("index.html", rows=rows, posts=posts)
 
 def login():
-    form = LoginForm()
-    
-    if form.validate_on_submit():
-        msg = f"username = {form.username.data}, password = {form.password.data}, rememberMe = {form.rememberMe.data}"
-        print(msg)
+    if current_user.is_authenticated:
         return redirect(url_for("index"))
-    
-    return render_template("login.html", title="Login In", form=form)
+    else:
+        form = LoginForm()
+        if form.validate_on_submit():
+            username = User.query.filter_by(username = form.username.data).first()
+
+            if username is None or username.check_password(form.password.data):
+                print("invalid username or password!")
+                # error = "invalid username or password!"
+                return redirect(url_for("login"))
+            
+            login_user(username, remember=form.rememberMe.data)
+            next_page = request.args.get("next")
+            if next_page:
+                return redirect(next_page)
+            msg = f"username = {form.username.data}, password = {form.password.data}, rememberMe = {form.rememberMe.data}"
+            print(msg)
+        
+        return render_template("login.html", title="Login In", form=form)
+
+def logout():
+    logout_user()
+    return redirect(url_for("login"))
