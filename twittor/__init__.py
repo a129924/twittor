@@ -1,19 +1,17 @@
 from flask import Flask
 
-from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
 from twittor.ext import db
 from twittor.constants import DB_URL
 from twittor.route import index, login
-
+from twittor.config import Config
 
 def create_app():
     app = Flask(__name__)
     migrate = Migrate()
-
-    app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    
+    app.config.from_object(Config)
     
     db.init_app(app)
     migrate.init_app(app, db)
