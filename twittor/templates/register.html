@@ -2,7 +2,7 @@
 
 {% block content %}
 <h1>Create New User</h1>
-<form action="post">
+<form method="post">
     {{ form.hidden_tag() }}
     <p>
         {{ form.username.label }}<br>
@@ -31,7 +31,7 @@
             <span style="color: red">[{{ error }}]</span>
         {% endfor %}
     <p>
-        {{ form.submit() }}
+        <input type="submit" value="register">
     </p>
 </form>
 {% endblock %}
