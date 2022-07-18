@@ -54,15 +54,12 @@ def logout():
     return redirect(url_for("login"))
 
 def register():
-    print("re123")
     if current_user.is_authenticated:
         return redirect(url_for("index"))
+    
     register_form = RegisterForm()
-
-    print(f"re: {register_form.validate_on_submit()}")
     
     if register_form.validate_on_submit():
-        print("re456")
         user = User(username=register_form.username.data,email=register_form.email.data)
         user.set_password(register_form.password.data)
         db.session.add(user)

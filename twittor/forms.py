@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, EmailField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
 
 from twittor.models import User
@@ -12,7 +12,7 @@ class LoginForm(FlaskForm):
     
 class RegisterForm(FlaskForm):
     username = StringField("Username", validators=[DataRequired()])
-    email = StringField("Email Address", validators=[DataRequired(), Email()])
+    email = EmailField("Email Address", validators=[DataRequired(), Email()])
     password = PasswordField("Password", validators=[DataRequired()])
     password_repeat = PasswordField("Password Repeat", validators=[DataRequired(), EqualTo("password")])
     submit = SubmitField("Register")
