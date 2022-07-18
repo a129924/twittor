@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, request
+from flask import render_template, redirect, url_for, request, abort
 from flask_login import login_user, current_user, logout_user, login_required
 
 from twittor.forms import LoginForm ,RegisterForm
@@ -73,3 +73,25 @@ def register():
     print(msg)
     
     return render_template("register.html", title="Registration", form=register_form)
+
+@login_required # 必須登入
+def user_view(username):
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        abort(404)
+        
+    posts = [
+        {
+            "author": {"username": user.username},
+            "body": f"hi I'm {user.username}!"
+        },
+        {
+            "author": {"username": user.username},
+            "body": f"hi I'm {user.username}!"
+        }
+    ]
+
+    return render_template("user.html",title="Profile",posts=posts,user=user)
+
+def page_not_found(error):
+    return render_template("404.html"), 404
