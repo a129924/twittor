@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, request, abort
 from flask_login import login_user, current_user, logout_user, login_required
 
-from twittor.forms import LoginForm ,RegisterForm
+from twittor.forms import LoginForm ,RegisterForm, EditProfileForm
 from twittor.models import User, Tweet
 from twittor.ext import db
 
@@ -92,3 +92,16 @@ def user_view(username):
 
 def page_not_found(error):
     return render_template("404.html"), 404
+
+@login_required
+def edit_profile():
+    edit_profile_form = EditProfileForm()
+    
+    if request.method == "GET":
+        edit_profile_form.about_me.data = current_user.about_me
+    elif request.method == "POST":
+        current_user.about_me = edit_profile_form.about_me.data
+        db.session.commit()
+        
+        return redirect(url_for("profile", username=current_user.username))
+    return render_template("edit_profile.html",form=edit_profile_form)

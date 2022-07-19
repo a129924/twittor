@@ -1,10 +1,35 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>{{ user.username }}</h1>
-{% for post in posts %}
-<div>
-    <p>{{ post.author.username }} says {{ post.body }}</p>
-</div>
-{% endfor %}
+
+    <table>
+        <tr>
+            <td><img src="{{ user.avatar(130) }}" alt=""></td>
+            <td>
+                <p><b>{{ user.username }}</b></p>
+                {% if user.about_me %}
+                    <p>About Me:{{ user.about_me }}</p>
+                {% endif %}
+
+                {% if user.crete_time %}
+                    <p>Joined:{{ user.user.crete_time }}</p>
+                {% endif %}
+                
+                {% if user==current_user %}
+                    <a href="{{ url_for('edit_profile') }}">edit your profile</a>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+
+    {% for post in posts %}
+        <div>
+            <table>
+                <tr>
+                    <td><img src="{{ user.avatar(60) }}" alt=""></td>
+                    <td>{{ post.author.username }} says {{ post.body }}</td>
+                </tr>
+            </table>
+        </div>
+    {% endfor %}
 {% endblock %}

@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, EmailField
-from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, EmailField, TextAreaField
+from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, Length
 
 from twittor.models import User
 
@@ -27,4 +27,7 @@ class RegisterForm(FlaskForm):
         if user is not None:
             raise ValidationError("please use different email")
 
+class EditProfileForm(FlaskForm):
+    about_me = TextAreaField("About Me", validators=[Length(min=0, max=120)])
+    submit = SubmitField("Save")
         
