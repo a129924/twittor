@@ -1,4 +1,5 @@
 from twittor import create_app
+from twittor.models import User, Tweet
 
 app = create_app()
 

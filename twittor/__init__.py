@@ -19,14 +19,15 @@ def create_app():
     
     db.init_app(app)
     migrate.init_app(app, db)
+    
     login_manager.init_app(app)
 
-    app.add_url_rule('/index',"index",index) # 等同於@app.route("/")
-    app.add_url_rule("/","index",index)
-    app.add_url_rule('/login',"login",login,methods = ["GET", "POST"]) 
-    app.add_url_rule("/logout", "logout", logout)
-    app.add_url_rule("/register", "register",register, methods=["GET", "POST"])
-    app.add_url_rule("/<username>","profile",user_view)
+    app.add_url_rule('/index',"index", index) # 等同於@app.route("/")
+    app.add_url_rule("/","index", index)
+    app.add_url_rule('/login',"login", login,methods = ["GET", "POST"]) 
+    app.add_url_rule("/logout", "logout",  logout)
+    app.add_url_rule("/register", "register", register, methods=["GET", "POST"])
+    app.add_url_rule("/<username>", "profile", user_view, methods=["GET", "POST"])
     app.add_url_rule("/edit_profile", "edit_profile", edit_profile, methods=["GET", "POST"])
     app.register_error_handler(404, page_not_found)
     

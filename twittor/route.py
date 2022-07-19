@@ -72,8 +72,8 @@ def register():
     return render_template("register.html", title="Registration", form=register_form)
 
 @login_required # 必須登入
-def user_view(username):
-    user = User.query.filter_by(username=username).first()
+def user_view(username): # 點選user profile回傳的username
+    user = User.query.filter_by(username=username).first() 
     if user is None:
         abort(404)
         
@@ -87,7 +87,14 @@ def user_view(username):
             "body": f"hi I'm {user.username}!"
         }
     ]
-
+    if request.method == "POST":
+        if request.form["request_botton"] == "Follow": # request.form 取得點擊按鈕的{name:value}
+            current_user.follow(user)
+            db.session.commit()
+        else:
+            current_user.unfollow(user)
+            db.session.commit()
+            
     return render_template("user.html",title="Profile",posts=posts,user=user)
 
 def page_not_found(error):

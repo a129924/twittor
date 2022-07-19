@@ -6,10 +6,10 @@ import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
-follwers = db.Table("followers", 
-                    db.Column("follower_id",db.Integer,db.ForeignKey("user_id")),
-                    db.Column("followed_id", db.Integer,db.ForeignKey("user_id"))
-                    )
+followers = db.Table('followers',
+                     db.Column('follower_id', db.Integer,db.ForeignKey('user.id')),
+                     db.Column('followed_id', db.Integer,db.ForeignKey('user.id'))
+                     )
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -21,11 +21,13 @@ class User(UserMixin, db.Model):
     
     tweets = db.relationship("Tweet", backref="author", lazy="dynamic")
     
-    followed = db.relationship(
-        "User", secondary=follwers, 
-        primaryjoin=(follwers.c.follower_id == id),
-        backref=db.backref("followers", lazy="dynamic"), lazy="dynamic")
-        
+    followed = db.relationship('User',
+                               secondary=followers,
+                               primaryjoin=(followers.c.follower_id == id),
+                               secondaryjoin=(followers.c.followed_id == id),
+                               backref=db.backref('followers', lazy='dynamic'),
+                               lazy='dynamic')
+    
     def __repr__(self):
         return f"id={self.id},username={self.username},email={self.username},password={self.password_hash},about_me={self.about_me},create_date={self.create_time}"
 
@@ -38,6 +40,19 @@ class User(UserMixin, db.Model):
     def avatar(self, size:int=80):
         md5_digest = md5(self.email.lower().encode("utf-8")).hexdigest()
         return f"https://2.gravatar.com/avatar/{md5_digest}?d=identicon&s={size}"
+    
+    def follow(self,user):
+        if not self.is_following(user):
+            self.followed.append(user)
+    
+    def unfollow(self,user):
+        if self.is_following(user):
+            self.followed.remove(user)
+    
+    def is_following(self,user):
+        return self.followed.filter(followers.c.followed_id == user.id).count() > 0
+
+    
 
 @login_manager.user_loader
 def load_user(id):
