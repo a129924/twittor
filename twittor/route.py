@@ -1,12 +1,19 @@
-from flask import render_template, redirect, url_for, request, abort
+from flask import render_template, redirect, url_for, request, abort, current_app
 from flask_login import login_user, current_user, logout_user, login_required
 
-from twittor.forms import LoginForm ,RegisterForm, EditProfileForm
+from twittor.forms import LoginForm ,RegisterForm, EditProfileForm, TweetForm
 from twittor.models import User, Tweet
 from twittor.ext import db
 
 @login_required
 def index():
+    tweet_form = TweetForm()
+    if tweet_form.validate_on_submit():
+        tweet = Tweet(body=tweet_form.tweet.data, author=current_user)
+        db.session.add(tweet)
+        db.session.commit()
+        
+        return redirect(url_for("index"))
     rows = [
         {"name": "Python","age":27},
         {"name": "Python","age":27},
@@ -16,7 +23,14 @@ def index():
         {"name": "Python", "age": 27},
     ]
     tweets = current_user.own_and_followed_tweets()
-    return render_template("index.html", rows=rows, tweets=tweets)
+    page_num = int(request.args.get("page") or 1)
+    tweets = tweets.paginate(page=page_num, per_page=current_app.config["TWEET_PER_PAGE"], error_out=False)
+    next_url = url_for("index", page=tweets.next_num) if tweets.has_next else None
+    prev_url = url_for("index", page=tweets.prev_num) if tweets.has_prev else None
+    
+    return render_template(
+        "index.html", rows=rows, tweets=tweets.items, tweet_form=tweet_form, next_url=next_url, prev_url=prev_url
+        )
 
 def login():
     if current_user.is_authenticated:
@@ -69,7 +83,17 @@ def user_view(username): # 點選user profile回傳的username
         abort(404)
         
     # tweets = Tweet.query.filter_by(author = user)
-    tweets = user.tweets
+    page_num = int(request.args.get('page') or 1)
+    tweets = user.tweets.order_by(Tweet.create_date.desc()).paginate(
+        page=page_num, 
+        per_page=current_app.config["TWEET_PER_PAGE"], 
+        error_out=False)
+    
+    next_url = url_for(
+        "profile", page=tweets.next_num, username=username) if tweets.has_next else None
+    prev_url = url_for(
+        "profile", page=tweets.prev_num, username=username) if tweets.has_prev else None
+    
     print(tweets)
     if request.method == "POST":
         if request.form["request_botton"] == "Follow": # request.form 取得點擊按鈕的{name:value}
@@ -79,7 +103,7 @@ def user_view(username): # 點選user profile回傳的username
             current_user.unfollow(user)
             db.session.commit()
             
-    return render_template("user.html", title="Profile", tweets=tweets, user=user)
+    return render_template("user.html", title="Profile", tweets=tweets.items, user=user, prev_url=prev_url, next_url=next_url)
 
 def page_not_found(error):
     return render_template("404.html"), 404

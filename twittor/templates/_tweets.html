@@ -1,10 +1,15 @@
-{% for tweet in tweets %}
 <table>
-    <tr>
-        <td><img src="{{ tweet.author.avatar(60) }}" alt=""></td>
+{% for tweet in tweets %}
+    <tr valign="top">
+        <td><img src="{{ tweet.author.avatar(48) }}" alt=""></td>
         <td>
-            <p>{{ tweet.author.username }} says: says: <b>{{ tweet.body }}</b></p>
+            <b>
+            <a href="/{{ url_for('profile',username=tweet.author.username) }}">
+                <b>{{ tweet.author.username }}</b></a>
+            {{ tweet.create_date }} <br> 
+            {{ tweet.body }}
         </td>
     </tr>
-</table>
 {% endfor %}
+</table>
+
