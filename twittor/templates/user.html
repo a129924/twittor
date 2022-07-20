@@ -33,15 +33,5 @@
             </td>
         </tr>
     </table>
-
-    {% for post in posts %}
-        <div>
-            <table>
-                <tr>
-                    <td><img src="{{ user.avatar(60) }}" alt=""></td>
-                    <td>{{ post.author.username }} says {{ post.body }}</td>
-                </tr>
-            </table>
-        </div>
-    {% endfor %}
+{%  include "_tweets.html" %}
 {% endblock %}

@@ -15,17 +15,8 @@ def index():
         {"name": "Python", "age": 27},
         {"name": "Python", "age": 27},
     ]
-    posts = [
-        {
-            "author":{"username": "root"},
-            "body": "hi I'm root!"
-        },
-        {
-            "author":{"username": "test"},
-            "body": "hi I'm test!"
-        }
-    ]
-    return render_template("index.html", rows=rows, posts=posts)
+    tweets = current_user.own_and_followed_tweets()
+    return render_template("index.html", rows=rows, tweets=tweets)
 
 def login():
     if current_user.is_authenticated:
@@ -77,16 +68,9 @@ def user_view(username): # 點選user profile回傳的username
     if user is None:
         abort(404)
         
-    posts = [
-        {
-            "author": {"username": user.username},
-            "body": f"hi I'm {user.username}!"
-        },
-        {
-            "author": {"username": user.username},
-            "body": f"hi I'm {user.username}!"
-        }
-    ]
+    # tweets = Tweet.query.filter_by(author = user)
+    tweets = user.tweets
+    print(tweets)
     if request.method == "POST":
         if request.form["request_botton"] == "Follow": # request.form 取得點擊按鈕的{name:value}
             current_user.follow(user)
@@ -95,7 +79,7 @@ def user_view(username): # 點選user profile回傳的username
             current_user.unfollow(user)
             db.session.commit()
             
-    return render_template("user.html",title="Profile",posts=posts,user=user)
+    return render_template("user.html", title="Profile", tweets=tweets, user=user)
 
 def page_not_found(error):
     return render_template("404.html"), 404

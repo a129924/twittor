@@ -1,0 +1,10 @@
+{% for tweet in tweets %}
+<table>
+    <tr>
+        <td><img src="{{ tweet.author.avatar(60) }}" alt=""></td>
+        <td>
+            <p>{{ tweet.author.username }} says: says: <b>{{ tweet.body }}</b></p>
+        </td>
+    </tr>
+</table>
+{% endfor %}
