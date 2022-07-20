@@ -35,3 +35,12 @@ class TweetForm(FlaskForm):
     tweet = TextAreaField("Tweet", validators=[DataRequired(), Length(min=0, max=140)])
     submit = SubmitField("Tweet")
     
+class PasswordResetRequestForm(FlaskForm):
+    email = EmailField("Email Address", validators=[DataRequired(),Email()])
+    submit = SubmitField("Password Reset")
+    
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if not user:
+            raise ValidationError(
+                "You do not an account for this email address")

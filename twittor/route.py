@@ -1,7 +1,7 @@
-from flask import render_template, redirect, url_for, request, abort, current_app
+from flask import render_template, redirect, url_for, request, abort, current_app, flash
 from flask_login import login_user, current_user, logout_user, login_required
 
-from twittor.forms import LoginForm ,RegisterForm, EditProfileForm, TweetForm
+from twittor.forms import LoginForm ,RegisterForm, EditProfileForm, TweetForm, PasswordResetRequestForm
 from twittor.models import User, Tweet
 from twittor.ext import db
 
@@ -120,3 +120,21 @@ def edit_profile():
         
         return redirect(url_for("profile", username=current_user.username))
     return render_template("edit_profile.html",form=edit_profile_form)
+
+def reset_password_request():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = PasswordResetRequestForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user:
+            flash(
+                """
+                You should soon receive an email allowing you to reset your password.
+                Please make sure to check your spam and trash if you can't find the email.
+                """
+                )
+        else:
+            raise 
+        return redirect(url_for("login"))
+    return render_template("password_reset_request.html",form=form)
