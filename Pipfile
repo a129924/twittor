@@ -38,6 +38,7 @@ dnspython = "==2.2.1"
 flask-session = "==0.4.0"
 cachelib = "==0.9.0"
 flask-mail = "*"
+pyjwt = "*"
 
 [dev-packages]
 autopep8 = "*"

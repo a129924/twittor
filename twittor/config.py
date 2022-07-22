@@ -13,6 +13,9 @@ class Config:
     MAIL_SERVER = 'smtp.office365.com'  # 郵件服務商的smtp
     MAIL_USERNAME = os.getenv('MAIL_USERNAME') or "YourEmail@outlook.com"  # email帳號
     MAIL_PASSWORD = os.getenv('MAIL_PASSWORD') or 'YourPassword'  # email密碼
+    # MAIL_USERNAME = "a129924@outlook.com"  # email帳號
+    # MAIL_PASSWORD = "Ellis11087"  # email密碼
+
     MAIL_PORT = 587  # stmp接口
     MAIL_USE_TLS = True  # 是否用TLS加密，outlook需要，其他邮箱不一定
     MAIL_DEFAULT_SENDER = ('FlaskRestful', MAIL_USERNAME)  # 可選擇(姓名，發送者電子郵件信箱)，也可以選擇單一電子信箱

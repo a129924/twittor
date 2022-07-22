@@ -2,9 +2,10 @@ from twittor.ext import db
 from twittor.flask_login_manager import login_manager
 from hashlib import md5
 
-import datetime
+import datetime, time, jwt
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+from flask import current_app
 
 followers = db.Table('followers',
                      db.Column('follower_id', db.Integer,db.ForeignKey('user.id')),
@@ -58,7 +59,29 @@ class User(UserMixin, db.Model):
                 followers.c.follower_id == self.id)
         own = Tweet.query.filter_by(user_id=self.id)
         return followed.union(own).order_by(Tweet.create_date.desc())
-
+    
+    def get_jwt_token(self, expire = 600):
+        return jwt.encode(
+            {
+                "email": self.email,
+                "exp": time.time() + expire
+            },
+            current_app.config["SECRET_KEY"],
+            algorithm = "HS256")
+    
+    @staticmethod    
+    def verify_jwt_token(token):
+        try:
+            email = jwt.decode(
+                token,
+                current_app.config["SECRET_KEY"],
+                algorithms = ["HS256"]
+            )
+            email = email["email"]
+        
+        except:
+            return 
+        return User.query.filter_by(email=email).first()
     
 
 @login_manager.user_loader

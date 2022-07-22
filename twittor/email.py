@@ -13,13 +13,12 @@ def send_async_email(app, message):
 def send_email(subject, recipients, text_body, html_body):
     message = Message()
     
-    message.subject = subject
-    message.sender = os.getenv('MAIL_USERNAME') or "YourEmail@outlook.com" 
+    message.subject = subject 
     message.recipients = recipients
     message.reply_to = "noreply@twittor.com"
     message.body = text_body
+    message.html = html_body
     
-    mail.send(message)
-    print(html_body)
-    # Thread(target=send_async_email,
-    #        args=(current_app._get_current_object(), message)).start()
+    # mail.send(message)
+    Thread(target=send_async_email,
+           args=(current_app._get_current_object(), message)).start()

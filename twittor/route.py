@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, request, abort, current_app, flash
 from flask_login import login_user, current_user, logout_user, login_required
 
-from twittor.forms import LoginForm ,RegisterForm, EditProfileForm, TweetForm, PasswordResetRequestForm
+from twittor.forms import LoginForm, RegisterForm, EditProfileForm, TweetForm, PasswordResetRequestForm, PasswordResetForm
 from twittor.models import User, Tweet
 from twittor.ext import db
 
@@ -137,12 +137,33 @@ def reset_password_request():
                 """
                 )
             
+            token = user.get_jwt_token()
+            url = f"http://127.0.0.1:5000/password_reset/{token}"
+
             send_email(
-                subject='subject',
-                recipients=["a129924@outlook.com"],
-                text_body='this is text body',
-                html_body='<h1>this is html body</h1>'
+                subject='Twittor - Reset Your Password.',
+                recipients=[user.email],
+                text_body='url',
+                html_body=f'<h1>{url}</h1>'
                 )
+            
             
             return redirect(url_for('login'))
     return render_template("password_reset_request.html",form=form)
+
+def password_reset(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    print(token)
+    user = User.verify_jwt_token(token)
+    print(user)
+    
+    if not user:
+        return redirect(url_for('login'))
+    form = PasswordResetForm()
+    
+    if form.validate_on_submit():
+        user.set_password(form.password.data)
+        db.session.commit()
+        return redirect(url_for("login"))
+    return render_template('password_reset.html', title="Password Reset", form=form)
