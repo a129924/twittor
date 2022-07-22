@@ -1,4 +1,5 @@
 from threading import Thread
+import os
 
 from flask import current_app
 from flask_mail import Message
@@ -13,7 +14,7 @@ def send_email(subject, recipients, text_body, html_body):
     message = Message()
     
     message.subject = subject
-    message.sender = "a129924@outlook.com"
+    message.sender = os.getenv('MAIL_USERNAME') or "YourEmail@outlook.com" 
     message.recipients = recipients
     message.reply_to = "noreply@twittor.com"
     message.body = text_body
