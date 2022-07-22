@@ -7,18 +7,23 @@ from twittor.ext import db
 from twittor.route import index, login, logout, register, user_view, edit_profile, page_not_found, reset_password_request
 from twittor.config import Config
 from twittor.flask_login_manager import login_manager
-
+from twittor.mail_ext import mail
 
 app = Flask(__name__)
 migrate = Migrate()
+
 login_manager.login_view = "login"
 
 def create_app():
     
     app.config.from_object(Config)
+    # app.config["MAIL_SERVER"] = 587
+    
+    print(Config)
     
     db.init_app(app)
     migrate.init_app(app, db)
+    mail.init_app(app)
     
     login_manager.init_app(app)
 

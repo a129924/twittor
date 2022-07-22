@@ -5,6 +5,8 @@ from twittor.forms import LoginForm ,RegisterForm, EditProfileForm, TweetForm, P
 from twittor.models import User, Tweet
 from twittor.ext import db
 
+from twittor.email import send_email
+
 @login_required
 def index():
     tweet_form = TweetForm()
@@ -134,7 +136,13 @@ def reset_password_request():
                 Please make sure to check your spam and trash if you can't find the email.
                 """
                 )
-        else:
-            raise 
-        return redirect(url_for("login"))
+            
+            send_email(
+                subject='subject',
+                recipients=["a129924@outlook.com"],
+                text_body='this is text body',
+                html_body='<h1>this is html body</h1>'
+                )
+            
+            return redirect(url_for('login'))
     return render_template("password_reset_request.html",form=form)
