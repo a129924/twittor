@@ -138,10 +138,9 @@ def reset_password_request():
                 )
             
             token = user.get_jwt_token()
-<<<<<<< HEAD
             url_password_reset = url_for("password_reset", token=token, _external=True)
             url_password_request = url_for("reset_password_request",_external=True) 
-=======
+
             
             url_password_reset = url_for(
                 "password_reset",
@@ -153,7 +152,6 @@ def reset_password_request():
                 "reset_password_request",
                 _external = True
             )
->>>>>>> d7b71f0481baddfe475da64e760c8d6ff1c9b7c5
 
             send_email(
                 subject=current_app.config["MAIL_SUBJECT_RESET_PASSWORD"],
