@@ -138,7 +138,8 @@ def reset_password_request():
                 )
             
             token = user.get_jwt_token()
-            url = f"http://127.0.0.1:5000/password_reset/{token}"
+            url_password_reset = url_for("password_reset", token=token, _external=True)
+            url_password_request = url_for("reset_password_request",_external=True) 
 
             send_email(
                 subject='Twittor - Reset Your Password.',
