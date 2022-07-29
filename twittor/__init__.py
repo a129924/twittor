@@ -3,7 +3,7 @@ from flask import Flask
 from flask_migrate import Migrate
 
 
-from twittor.ext import db
+from .models.ext import db
 from twittor.route import index, login, logout, register, user_view, edit_profile, page_not_found, reset_password_request, password_reset
 from twittor.config import Config
 from twittor.flask_login_manager import login_manager

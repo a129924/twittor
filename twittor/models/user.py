@@ -1,4 +1,4 @@
-from twittor.ext import db
+from .ext import db
 from twittor.flask_login_manager import login_manager
 from twittor.models.tweet import Tweet
 from hashlib import md5

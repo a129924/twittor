@@ -1,4 +1,4 @@
-from twittor.ext import db
+from .ext import db
 import datetime
 
 class Tweet(db.Model):
