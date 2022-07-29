@@ -17,14 +17,7 @@ def index():
         db.session.commit()
         
         return redirect(url_for("index"))
-    rows = [
-        {"name": "Python","age":27},
-        {"name": "Python","age":27},
-        {"name": "Python","age":27},
-        {"name": "Python", "age": 27},
-        {"name": "Python", "age": 27},
-        {"name": "Python", "age": 27},
-    ]
+
     tweets = current_user.own_and_followed_tweets()
     page_num = int(request.args.get("page") or 1)
     tweets = tweets.paginate(page=page_num, per_page=current_app.config["TWEET_PER_PAGE"], error_out=False)
@@ -32,7 +25,7 @@ def index():
     prev_url = url_for("index", page=tweets.prev_num) if tweets.has_prev else None
     
     return render_template(
-        "index.html", rows=rows, tweets=tweets.items, tweet_form=tweet_form, next_url=next_url, prev_url=prev_url
+        "index.html", tweets=tweets.items, tweet_form=tweet_form, next_url=next_url, prev_url=prev_url
         )
 
 def login():
@@ -42,7 +35,6 @@ def login():
         login_form = LoginForm()
         if login_form.validate_on_submit():
             username = User.query.filter_by(username=login_form.username.data).first()
-
             if username is None or username.check_password(login_form.password.data):
                 print("invalid username or password!")
                 # error = "invalid username or password!"

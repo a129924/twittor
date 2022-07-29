@@ -1,24 +1,33 @@
 {% extends "base.html" %}
 
 {% block content %}
-<form action="" method="post">
-    <h1>Login</h1>
-    <p>{{ form.csrf_token }}</p> <!-- 必須加這段才可以運行正常 -->
-    <p>
-        {{ form.username.label }}
-        {{ form.username() }}
-    </p>
-    <p>
-        {{ form.password.label }}
-        {{ form.password() }}
-    </p>
-    <p>
-        {{ form.rememberMe() }}
-        {{ form.rememberMe.label }}
-    </p>
-    <p>
-        {{ form.submit() }}
-    </p>
-    <a href="{{ url_for('register') }}">New User?</a>
-    <a href="{{ url_for('reset_password_request')}}">Forgot Password?</a>
+<div class="row">
+    <div class="text-center col-lg-4"></div>
+    <div class="text-center col-lg-4">
+        <h1 class="h3 mb-3 font-weight-normal">Please Login</h1>
+        <form action="" method="post" class="form-signin">
+            <p>{{ form.csrf_token }}</p> <!-- 必須加這段才可以運行正常 -->
+            <p>
+                {{ form.username.label }}
+                {{ form.username() }}
+            </p>
+            <p>
+                {{ form.password.label }}
+                {{ form.password() }}
+            </p>
+            <p>
+                {{ form.rememberMe() }}
+                {{ form.rememberMe.label }}
+            </p>
+            <p>
+                <input class="btn btn-lg btn-outline-primary" id="submit" name="submit" type="submit" value="Login">
+            </p>
+            <p>
+                <a href="{{ url_for('register') }}">New User?</a> or 
+                <a href="{{ url_for('reset_password_request')}}">Forgot Password?</a>
+            </p>
+            <p class="mt-5 mb-3 text-muted"></p>
+        </form>
+    </div>
+</div>
 {% endblock %}
